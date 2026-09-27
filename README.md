@@ -70,5 +70,5 @@ Then, open your browser and navigate to `http://127.0.0.1:5000`.
 
 This project implements ML-KEM-768 for key encapsulation and AES-GCM for authenticated encryption. This ensures that all federated model updates remain confidential and tamper-proof against both classical and quantum adversaries.
 
-## 📄 License
-[MIT License] - *Please update according to your requirements.*
+## ✍️ Author
+**PANALA PRUDHVI SAI**
