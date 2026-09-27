@@ -1,0 +1,15 @@
+{
+    "stage": "Secure Federated Learning",
+    "clients_per_round": 5,
+    "rounds": 3,
+    "ml_kem_algorithm": "ML-KEM-768",
+    "ml_kem_ciphertext_size_bytes": 1088,
+    "aes_algorithm": "AES-256-GCM",
+    "aes_key_size_bytes": 32,
+    "aes_nonce_size_bytes": 12,
+    "model_update_size_bytes": 2845,
+    "encrypted_update_size_bytes": 2861,
+    "all_encrypted_updates_verified": true,
+    "global_model_changed": true,
+    "secure_federated_learning_passed": true
+}

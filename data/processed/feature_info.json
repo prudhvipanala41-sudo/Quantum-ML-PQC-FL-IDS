@@ -1,0 +1,14 @@
+{
+    "original_feature_count": 41,
+    "processed_feature_count": 122,
+    "categorical_features": [
+        "protocol_type",
+        "service",
+        "flag"
+    ],
+    "numerical_feature_count": 38,
+    "classification": {
+        "normal": 0,
+        "attack": 1
+    }
+}

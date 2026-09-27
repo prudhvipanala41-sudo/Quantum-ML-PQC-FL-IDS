@@ -1,0 +1,20 @@
+{
+    "model": "Federated IDS Neural Network",
+    "test_samples": 22544,
+    "features": 8,
+    "accuracy": 0.7550124201561391,
+    "precision": 0.9536991062562066,
+    "recall": 0.5986908750876646,
+    "f1_score": 0.7356024701996265,
+    "false_positive_rate": 0.03841005045824323,
+    "confusion_matrix": [
+        [
+            9338,
+            373
+        ],
+        [
+            5150,
+            7683
+        ]
+    ]
+}

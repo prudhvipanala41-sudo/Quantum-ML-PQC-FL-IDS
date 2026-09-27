@@ -1,0 +1,19 @@
+{
+    "model": "RandomForestClassifier",
+    "n_estimators": 100,
+    "random_state": 42,
+    "training_samples": 125973,
+    "testing_samples": 22544,
+    "features": 8,
+    "accuracy": 0.7324343506032647,
+    "precision": 0.9381522999613452,
+    "recall": 0.5673653861139251,
+    "f1_score": 0.7070991550937166,
+    "false_positive_rate": 0.04942848316342292,
+    "true_negative": 9231,
+    "false_positive": 480,
+    "false_negative": 5552,
+    "true_positive": 7281,
+    "training_time_seconds": 1.22953462600708,
+    "prediction_time_seconds": 0.08130574226379395
+}

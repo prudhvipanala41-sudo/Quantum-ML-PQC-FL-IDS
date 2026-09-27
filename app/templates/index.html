@@ -1,0 +1,3357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quantum IDS Command Center</title>
+
+<style>
+
+:root{
+    --bg:#07111f;
+    --sidebar:#06101c;
+    --panel:#0d1b2d;
+    --panel2:#10243a;
+    --border:#1c3651;
+
+    --text:#e7f0fa;
+    --muted:#9ab0c5;
+
+    --cyan:#22d3ee;
+    --green:#22c55e;
+    --purple:#8b5cf6;
+    --blue:#3b82f6;
+    --amber:#f59e0b;
+    --red:#ef4444;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    font-size:16px;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    font-size:15px;
+    line-height:1.5;
+}
+
+button{
+    font-family:inherit;
+}
+
+.app{
+    min-height:100vh;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:68px;
+
+    background:rgba(6,16,28,.97);
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 28px;
+    z-index:100;
+
+    backdrop-filter:blur(12px);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.brand-icon{
+    width:38px;
+    height:38px;
+
+    border:1px solid var(--cyan);
+    border-radius:9px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:var(--cyan);
+    font-size:18px;
+    font-weight:bold;
+
+    box-shadow:0 0 18px rgba(34,211,238,.18);
+}
+
+.brand-title{
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.system-status{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    font-size:13px;
+    font-weight:bold;
+
+    color:var(--green);
+    letter-spacing:.7px;
+}
+
+.status-dot{
+    width:10px;
+    height:10px;
+
+    border-radius:50%;
+
+    background:var(--green);
+
+    box-shadow:0 0 12px rgba(34,197,94,.8);
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+    position:fixed;
+
+    top:68px;
+    bottom:0;
+    left:0;
+
+    width:250px;
+
+    background:var(--sidebar);
+    border-right:1px solid var(--border);
+
+    padding:22px 13px;
+
+    overflow-y:auto;
+}
+
+.sidebar-label{
+    font-size:11px;
+    color:#647e98;
+
+    letter-spacing:1.7px;
+    font-weight:bold;
+
+    margin:6px 12px 13px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.nav-btn{
+    width:100%;
+
+    border:none;
+    background:transparent;
+
+    color:var(--muted);
+
+    text-align:left;
+
+    padding:13px 14px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:14px;
+    font-weight:600;
+
+    transition:.2s;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.nav-btn:hover{
+    background:#0d1d30;
+    color:var(--text);
+}
+
+.nav-btn.active{
+    background:#10283e;
+    color:var(--cyan);
+
+    border-left:3px solid var(--cyan);
+
+    padding-left:11px;
+}
+
+.nav-icon{
+    width:21px;
+    text-align:center;
+    font-size:15px;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+    margin-left:250px;
+
+    padding-top:68px;
+
+    min-height:100vh;
+}
+
+.content{
+    padding:30px;
+
+    max-width:1700px;
+
+    margin:auto;
+}
+
+.view{
+    display:none;
+
+    animation:fadeIn .22s ease;
+}
+
+.view.active{
+    display:block;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+/* =========================
+   HEADERS
+========================= */
+
+.view-header{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:flex-start;
+
+    margin-bottom:25px;
+}
+
+.view-title{
+    font-size:30px;
+    font-weight:700;
+}
+
+.view-description{
+    color:var(--muted);
+
+    margin-top:7px;
+
+    font-size:14px;
+}
+
+.header-badge{
+    border:1px solid var(--border);
+
+    background:var(--panel);
+
+    color:var(--cyan);
+
+    padding:8px 13px;
+
+    border-radius:7px;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+/* =========================
+   GRIDS
+========================= */
+
+.grid{
+    display:grid;
+    gap:16px;
+}
+
+.grid-2{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.grid-3{
+    grid-template-columns:repeat(3,1fr);
+}
+
+.grid-4{
+    grid-template-columns:repeat(4,1fr);
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:20px;
+}
+
+.card-title{
+    font-size:13px;
+
+    color:#91a8bd;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.1px;
+
+    margin-bottom:13px;
+
+    font-weight:bold;
+}
+
+.card h2{
+    font-size:28px;
+}
+
+.card h3{
+    font-size:18px;
+}
+
+.small{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:8px;
+}
+
+.green{
+    color:var(--green);
+}
+
+.cyan{
+    color:var(--cyan);
+}
+
+.purple{
+    color:#a78bfa;
+}
+
+.blue{
+    color:#60a5fa;
+}
+
+.amber{
+    color:var(--amber);
+}
+
+.red{
+    color:var(--red);
+}
+
+/* =========================
+   METRICS
+========================= */
+
+.metric{
+    position:relative;
+    overflow:hidden;
+}
+
+.metric:after{
+    content:"";
+
+    position:absolute;
+
+    width:100px;
+    height:100px;
+
+    right:-40px;
+    bottom:-40px;
+
+    border-radius:50%;
+
+    background:rgba(34,211,238,.06);
+}
+
+.metric-value{
+    font-size:31px;
+    font-weight:bold;
+}
+
+.metric-label{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-top:7px;
+}
+
+.metric-status{
+    margin-top:13px;
+
+    font-size:12px;
+
+    color:var(--green);
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    text-align:left;
+
+    color:#8199b0;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.8px;
+
+    padding:13px;
+
+    border-bottom:1px solid var(--border);
+}
+
+td{
+    padding:14px 13px;
+
+    border-bottom:1px solid #152a40;
+
+    font-size:13px;
+}
+
+tr:last-child td{
+    border-bottom:none;
+}
+
+/* =========================
+   PILLS
+========================= */
+
+.pill{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    border-radius:20px;
+
+    padding:6px 10px;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+.pill-green{
+    background:rgba(34,197,94,.1);
+    color:var(--green);
+}
+
+.pill-cyan{
+    background:rgba(34,211,238,.1);
+    color:var(--cyan);
+}
+
+.pill-purple{
+    background:rgba(139,92,246,.12);
+    color:#a78bfa;
+}
+
+.pill-amber{
+    background:rgba(245,158,11,.1);
+    color:var(--amber);
+}
+
+/* =========================
+   ARCHITECTURE
+========================= */
+
+.architecture{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    padding:30px 10px;
+}
+
+.node{
+    min-width:145px;
+
+    background:#0b1727;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    padding:17px 13px;
+
+    text-align:center;
+}
+
+.node-title{
+    font-size:13px;
+
+    font-weight:bold;
+}
+
+.node-sub{
+    font-size:12px;
+
+    color:var(--muted);
+
+    margin-top:6px;
+}
+
+.arrow{
+    color:var(--cyan);
+
+    font-size:23px;
+}
+
+/* =========================
+   CLIENTS
+========================= */
+
+.client-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:9px;
+}
+
+.client-row{
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+}
+
+.client{
+    width:80px;
+
+    padding:10px;
+
+    text-align:center;
+
+    background:#0a1828;
+
+    border:1px solid var(--border);
+
+    border-radius:6px;
+
+    font-size:12px;
+}
+
+.client-line{
+    height:1px;
+
+    background:var(--border);
+
+    flex:1;
+}
+
+/* =========================
+   GRAPHS
+========================= */
+
+.graph-grid{
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:17px;
+}
+
+.graph-card{
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    padding:16px;
+}
+
+.graph-card img{
+    width:100%;
+
+    display:block;
+
+    border-radius:6px;
+
+    background:#081321;
+}
+
+.graph-title{
+    font-size:14px;
+
+    font-weight:bold;
+
+    margin-bottom:13px;
+}
+
+/* =========================
+   PIPELINE
+========================= */
+
+.pipeline{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+}
+
+.pipeline-item{
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:13px 15px;
+
+    background:#0b1828;
+
+    border:1px solid #142b42;
+
+    border-radius:7px;
+}
+
+.pipeline-number{
+    width:30px;
+    height:30px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    background:rgba(34,197,94,.13);
+
+    color:var(--green);
+}
+
+.pipeline-name{
+    font-size:14px;
+
+    font-weight:600;
+}
+
+.pipeline-state{
+    margin-left:auto;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:var(--green);
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress-box{
+    margin-top:17px;
+}
+
+.progress-track{
+    height:8px;
+
+    background:#091522;
+
+    border-radius:20px;
+
+    overflow:hidden;
+}
+
+.progress-fill{
+    width:100%;
+
+    height:100%;
+
+    background:var(--cyan);
+
+    box-shadow:0 0 12px rgba(34,211,238,.35);
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info-list{
+    display:flex;
+
+    flex-direction:column;
+}
+
+.info-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:13px 0;
+
+    border-bottom:1px solid #162c42;
+
+    font-size:13px;
+}
+
+.info-row:last-child{
+    border-bottom:none;
+}
+
+.info-key{
+    color:var(--muted);
+}
+
+.info-value{
+    font-weight:bold;
+
+    text-align:right;
+}
+
+/* =========================
+   ATTACK / ROBUSTNESS
+========================= */
+
+.attack-card{
+    border-left:3px solid var(--red);
+}
+
+.robust-card{
+    border-left:3px solid var(--green);
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    background:linear-gradient(
+        135deg,
+        #0c2032,
+        #0d1b2d
+    );
+
+    border:1px solid #214662;
+
+    border-radius:11px;
+
+    padding:30px;
+
+    margin-bottom:17px;
+}
+
+.hero-label{
+    color:var(--cyan);
+
+    font-size:12px;
+
+    letter-spacing:1.7px;
+
+    font-weight:bold;
+
+    margin-bottom:13px;
+}
+
+.hero-title{
+    font-size:31px;
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+}
+
+.hero-description{
+    color:#a4b8cb;
+
+    font-size:14px;
+
+    max-width:1000px;
+
+    line-height:1.8;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+    color:#60788f;
+
+    font-size:11px;
+
+    text-align:center;
+
+    padding:30px 0 12px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1150px){
+
+    .grid-4{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid-3{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:850px){
+
+    .sidebar{
+        width:75px;
+
+        padding:15px 8px;
+    }
+
+    .sidebar-label{
+        display:none;
+    }
+
+    .nav-btn{
+        justify-content:center;
+
+        padding:13px 5px;
+    }
+
+    .nav-btn span:not(.nav-icon){
+        display:none;
+    }
+
+    .main{
+        margin-left:75px;
+    }
+
+    .grid-2,
+    .grid-3,
+    .grid-4,
+    .graph-grid{
+        grid-template-columns:1fr;
+    }
+
+    .content{
+        padding:20px;
+    }
+
+    .brand-title{
+        font-size:16px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+<!-- =========================
+     TOP BAR
+========================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            Q
+        </div>
+
+        <div class="brand-title">
+            Quantum IDS Command Center
+        </div>
+
+    </div>
+
+    <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        SYSTEM ONLINE
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-label">
+        NAVIGATION
+    </div>
+
+    <nav class="nav">
+
+        <button class="nav-btn active" data-view="overview">
+            <span class="nav-icon">◈</span>
+            <span>OVERVIEW</span>
+        </button>
+
+        <button class="nav-btn" data-view="dataset">
+            <span class="nav-icon">▣</span>
+            <span>DATASET</span>
+        </button>
+
+        <button class="nav-btn" data-view="qml">
+            <span class="nav-icon">◉</span>
+            <span>QML IDS</span>
+        </button>
+
+        <button class="nav-btn" data-view="federated">
+            <span class="nav-icon">⌘</span>
+            <span>FEDERATED</span>
+        </button>
+
+        <button class="nav-btn" data-view="security">
+            <span class="nav-icon">◆</span>
+            <span>SECURITY</span>
+        </button>
+
+        <button class="nav-btn" data-view="attacks">
+            <span class="nav-icon">⚠</span>
+            <span>ATTACKS</span>
+        </button>
+
+        <button class="nav-btn" data-view="robustness">
+            <span class="nav-icon">✦</span>
+            <span>ROBUSTNESS</span>
+        </button>
+
+        <button class="nav-btn" data-view="benchmark">
+            <span class="nav-icon">▤</span>
+            <span>BENCHMARK</span>
+        </button>
+
+        <button class="nav-btn" data-view="graphs">
+            <span class="nav-icon">▥</span>
+            <span>GRAPHS</span>
+        </button>
+
+        <button class="nav-btn" data-view="pipeline">
+            <span class="nav-icon">➜</span>
+            <span>PIPELINE</span>
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-label" style="margin-top:30px;">
+        SYSTEM
+    </div>
+
+
+    <div class="card" style="padding:15px;">
+
+        <div style="font-size:11px;color:var(--muted);">
+            RESEARCH IMPLEMENTATION
+        </div>
+
+        <div style="font-size:21px;font-weight:bold;margin-top:5px;">
+            100%
+        </div>
+
+        <div class="progress-box">
+
+            <div class="progress-track">
+
+                <div class="progress-fill"></div>
+
+            </div>
+
+        </div>
+
+        <div style="
+            font-size:11px;
+            color:var(--green);
+            margin-top:8px;
+        ">
+            ALL EXPERIMENTS COMPLETE
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<main class="main">
+
+<div class="content">
+
+
+<!-- =====================================================
+     OVERVIEW
+===================================================== -->
+
+<section class="view active" id="overview">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Dashboard
+            </div>
+
+            <div class="view-description">
+                End-to-end experimental IDS monitoring and evaluation
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            SYSTEM ONLINE
+        </div>
+
+    </div>
+
+
+    <div class="hero">
+
+        <div class="hero-label">
+            QUANTUM SECURITY RESEARCH DASHBOARD
+        </div>
+
+        <div class="hero-title">
+            Quantum IDS Command Center
+        </div>
+
+        <div class="hero-description">
+            End-to-end intrusion detection using quantum machine learning,
+            federated learning, post-quantum key establishment,
+            authenticated encryption, model poisoning analysis and
+            robust aggregation.
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-4">
+
+        <div class="card metric">
+
+            <div class="card-title">
+                DATASET
+            </div>
+
+            <div class="metric-value blue">
+                NSL-KDD
+            </div>
+
+            <div class="metric-label">
+                125,973 Train • 22,544 Test
+            </div>
+
+            <div class="metric-status">
+                ● VALIDATED
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                QML IDS
+            </div>
+
+            <div class="metric-value green">
+                QKSVM
+            </div>
+
+            <div class="metric-label">
+                8-qubit controlled experiment
+            </div>
+
+            <div class="metric-status">
+                ● VALIDATED
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                FEDERATED
+            </div>
+
+            <div class="metric-value purple">
+                5 / 3
+            </div>
+
+            <div class="metric-label">
+                Clients / Rounds • Weighted FedAvg
+            </div>
+
+            <div class="metric-status">
+                ● COMPLETED
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                SECURITY
+            </div>
+
+            <div class="metric-value green">
+                PQC + GCM
+            </div>
+
+            <div class="metric-label">
+                ML-KEM-768 + AES-256-GCM
+            </div>
+
+            <div class="metric-status">
+                ● COMPLETED
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="grid grid-2">
+
+
+        <!-- ARCHITECTURE -->
+
+        <div class="card">
+
+            <div class="card-title">
+                Federated Architecture
+            </div>
+
+            <div class="small" style="margin-top:-6px;margin-bottom:18px;">
+                Client models → secure updates → aggregation → global IDS
+            </div>
+
+
+            <div class="client-list">
+
+                <div class="client-row">
+
+                    <div class="client">
+                        ▣ Client 1
+                    </div>
+
+                    <div class="client-line"></div>
+
+                    <span class="green">
+                        Local Model
+                    </span>
+
+                </div>
+
+
+                <div class="client-row">
+
+                    <div class="client">
+                        ▣ Client 2
+                    </div>
+
+                    <div class="client-line"></div>
+
+                    <span class="green">
+                        Local Model
+                    </span>
+
+                </div>
+
+
+                <div class="client-row">
+
+                    <div class="client">
+                        ▣ Client 3
+                    </div>
+
+                    <div class="client-line"></div>
+
+                    <span class="green">
+                        Local Model
+                    </span>
+
+                </div>
+
+
+                <div class="client-row">
+
+                    <div class="client">
+                        ▣ Client 4
+                    </div>
+
+                    <div class="client-line"></div>
+
+                    <span class="green">
+                        Local Model
+                    </span>
+
+                </div>
+
+
+                <div class="client-row">
+
+                    <div class="client">
+                        ▣ Client 5
+                    </div>
+
+                    <div class="client-line"></div>
+
+                    <span class="green">
+                        Local Model
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="architecture">
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="node">
+
+                    <div class="node-title">
+                        🔐 Secure Update
+                    </div>
+
+                    <div class="node-sub">
+                        ML-KEM-768 + AES-256-GCM
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="architecture" style="padding-top:0;">
+
+                <div class="node">
+
+                    <div class="node-title">
+                        ⚙ FedAvg
+                    </div>
+
+                    <div class="node-sub">
+                        Weighted aggregation
+                    </div>
+
+                </div>
+
+                <div class="arrow">
+                    →
+                </div>
+
+                <div class="node">
+
+                    <div class="node-title green">
+                        ◈ Global IDS Model
+                    </div>
+
+                    <div class="node-sub">
+                        8 → 16 → 1 neural network
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECENT EXPERIMENTS -->
+
+        <div class="card">
+
+            <div class="card-title">
+                Recent Experiments
+            </div>
+
+            <div class="small" style="margin-top:-6px;margin-bottom:16px;">
+                Completed research activities
+            </div>
+
+
+            <div class="info-list">
+
+                <div class="info-row">
+
+                    <span class="info-key">
+                        🟢 Dataset validated
+                    </span>
+
+                    <span class="info-value">
+                        NSL-KDD
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-key">
+                        🟢 QML IDS validated
+                    </span>
+
+                    <span class="info-value">
+                        Quantum Kernel SVM
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-key">
+                        🟢 Federated learning completed
+                    </span>
+
+                    <span class="info-value">
+                        5 Clients / 3 Rounds
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-key">
+                        🟢 Secure transport completed
+                    </span>
+
+                    <span class="info-value">
+                        PQC + AES-GCM
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-key">
+                        🟢 Robustness experiments completed
+                    </span>
+
+                    <span class="info-value">
+                        Poisoning + Median
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Global IDS Performance
+        </div>
+
+        <div class="grid grid-4">
+
+            <div>
+                <div class="small">
+                    Accuracy
+                </div>
+
+                <div class="metric-value cyan" id="mAccuracy">
+                    --
+                </div>
+            </div>
+
+
+            <div>
+                <div class="small">
+                    Precision
+                </div>
+
+                <div class="metric-value">
+                    <span id="mPrecision">--</span>
+                </div>
+            </div>
+
+
+            <div>
+                <div class="small">
+                    Recall
+                </div>
+
+                <div class="metric-value purple">
+                    <span id="mRecall">--</span>
+                </div>
+            </div>
+
+
+            <div>
+                <div class="small">
+                    F1 Score
+                </div>
+
+                <div class="metric-value green">
+                    <span id="mF1">--</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     DATASET
+===================================================== -->
+
+<section class="view" id="dataset">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Dataset
+            </div>
+
+            <div class="view-description">
+                NSL-KDD dataset preparation and validation
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            VALIDATED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-4">
+
+        <div class="card metric">
+
+            <div class="card-title">
+                TRAIN SAMPLES
+            </div>
+
+            <div class="metric-value blue">
+                125,973
+            </div>
+
+            <div class="metric-label">
+                NSL-KDD training records
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                TEST SAMPLES
+            </div>
+
+            <div class="metric-value cyan">
+                22,544
+            </div>
+
+            <div class="metric-label">
+                NSL-KDD testing records
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                ORIGINAL FEATURES
+            </div>
+
+            <div class="metric-value purple">
+                43
+            </div>
+
+            <div class="metric-label">
+                Raw dataset columns
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                SELECTED FEATURES
+            </div>
+
+            <div class="metric-value green">
+                8
+            </div>
+
+            <div class="metric-label">
+                Final IDS feature space
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                Dataset Processing
+            </div>
+
+            <div class="info-list">
+
+                <div class="info-row">
+                    <span class="info-key">Dataset</span>
+                    <span class="info-value">NSL-KDD</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Training shape</span>
+                    <span class="info-value">125,973 × 43</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Testing shape</span>
+                    <span class="info-value">22,544 × 43</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Processed features</span>
+                    <span class="info-value">122</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Feature selection</span>
+                    <span class="info-value">SelectKBest</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Final features</span>
+                    <span class="info-value">8</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Class Distribution
+            </div>
+
+            <div class="info-list">
+
+                <div class="info-row">
+                    <span class="info-key">Normal traffic</span>
+                    <span class="info-value green">67,343</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Attack traffic</span>
+                    <span class="info-value red">58,630</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">DoS</span>
+                    <span class="info-value">45,927</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Probe</span>
+                    <span class="info-value">11,656</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">R2L</span>
+                    <span class="info-value">993</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">U2R</span>
+                    <span class="info-value">52</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     QML IDS
+===================================================== -->
+
+<section class="view" id="qml">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                QML IDS
+            </div>
+
+            <div class="view-description">
+                Quantum Kernel Support Vector Machine intrusion detection experiment
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            QKSVM VALIDATED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-3">
+
+        <div class="card metric">
+
+            <div class="card-title">
+                MODEL
+            </div>
+
+            <div class="metric-value green">
+                QKSVM
+            </div>
+
+            <div class="metric-label">
+                Quantum Kernel SVM
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                QUBITS
+            </div>
+
+            <div class="metric-value purple">
+                8
+            </div>
+
+            <div class="metric-label">
+                Controlled quantum feature map
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                KERNEL
+            </div>
+
+            <div class="metric-value cyan">
+                QUANTUM
+            </div>
+
+            <div class="metric-label">
+                Quantum kernel evaluation
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                Quantum Validation
+            </div>
+
+            <div class="info-list">
+
+                <div class="info-row">
+                    <span class="info-key">Quantum feature map</span>
+                    <span class="info-value">8 qubits</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Probability vector</span>
+                    <span class="info-value">256 states</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Probability sum</span>
+                    <span class="info-value green">≈ 1.0</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Kernel A,A</span>
+                    <span class="info-value">≈ 0.9999996</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Kernel A,C</span>
+                    <span class="info-value">≈ 0.65268</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Pilot train / test</span>
+                    <span class="info-value">200 / 100</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                QML Workflow
+            </div>
+
+            <div class="pipeline">
+
+                <div class="pipeline-item">
+                    <div class="pipeline-number">1</div>
+                    <div class="pipeline-name">8-feature input</div>
+                    <div class="pipeline-state">✓</div>
+                </div>
+
+                <div class="pipeline-item">
+                    <div class="pipeline-number">2</div>
+                    <div class="pipeline-name">Quantum feature encoding</div>
+                    <div class="pipeline-state">✓</div>
+                </div>
+
+                <div class="pipeline-item">
+                    <div class="pipeline-number">3</div>
+                    <div class="pipeline-name">Quantum kernel calculation</div>
+                    <div class="pipeline-state">✓</div>
+                </div>
+
+                <div class="pipeline-item">
+                    <div class="pipeline-number">4</div>
+                    <div class="pipeline-name">QKSVM classification</div>
+                    <div class="pipeline-state">✓</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FEDERATED
+===================================================== -->
+
+<section class="view" id="federated">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Federated Learning
+            </div>
+
+            <div class="view-description">
+                Multi-client distributed IDS training with weighted FedAvg
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            COMPLETED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-4">
+
+        <div class="card metric">
+
+            <div class="card-title">
+                CLIENTS
+            </div>
+
+            <div class="metric-value purple">
+                5
+            </div>
+
+            <div class="metric-label">
+                Federated participants
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                ROUNDS
+            </div>
+
+            <div class="metric-value cyan">
+                3
+            </div>
+
+            <div class="metric-label">
+                Global training rounds
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                AGGREGATION
+            </div>
+
+            <div class="metric-value green">
+                FedAvg
+            </div>
+
+            <div class="metric-label">
+                Weighted parameter averaging
+            </div>
+
+        </div>
+
+
+        <div class="card metric">
+
+            <div class="card-title">
+                FEATURES
+            </div>
+
+            <div class="metric-value blue">
+                8
+            </div>
+
+            <div class="metric-label">
+                Final IDS input features
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Federated Architecture
+        </div>
+
+        <div class="architecture">
+
+            <div class="node">
+                <div class="node-title">Client 1</div>
+                <div class="node-sub">25,195 samples</div>
+            </div>
+
+            <div class="node">
+                <div class="node-title">Client 2</div>
+                <div class="node-sub">25,195 samples</div>
+            </div>
+
+            <div class="node">
+                <div class="node-title">Client 3</div>
+                <div class="node-sub">25,195 samples</div>
+            </div>
+
+            <div class="node">
+                <div class="node-title">Client 4</div>
+                <div class="node-sub">25,194 samples</div>
+            </div>
+
+            <div class="node">
+                <div class="node-title">Client 5</div>
+                <div class="node-sub">25,194 samples</div>
+            </div>
+
+        </div>
+
+        <div class="architecture">
+
+            <div class="node">
+
+                <div class="node-title cyan">
+                    Weighted FedAvg
+                </div>
+
+                <div class="node-sub">
+                    Global aggregation
+                </div>
+
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="node">
+
+                <div class="node-title green">
+                    Global IDS Model
+                </div>
+
+                <div class="node-sub">
+                    8 → 16 → 1
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Federated Validation
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Round</th>
+                        <th>Client 1</th>
+                        <th>Client 2</th>
+                        <th>Client 3</th>
+                        <th>Client 4</th>
+                        <th>Client 5</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Round 1</td>
+                        <td>0.250561</td>
+                        <td>0.249812</td>
+                        <td>0.248920</td>
+                        <td>0.246301</td>
+                        <td>0.245135</td>
+                    </tr>
+
+                    <tr>
+                        <td>Round 2</td>
+                        <td>0.210189</td>
+                        <td>0.208762</td>
+                        <td>0.207421</td>
+                        <td>0.205631</td>
+                        <td>0.204650</td>
+                    </tr>
+
+                    <tr>
+                        <td>Round 3</td>
+                        <td>0.194285</td>
+                        <td>0.192874</td>
+                        <td>0.191512</td>
+                        <td>0.189631</td>
+                        <td>0.187047</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SECURITY
+===================================================== -->
+
+<section class="view" id="security">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Security
+            </div>
+
+            <div class="view-description">
+                Post-quantum key establishment and authenticated encrypted model transport
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            PQC SECURED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-title">
+                ML-KEM-768
+            </div>
+
+            <h2 class="purple">
+                POST-QUANTUM KEM
+            </h2>
+
+            <div class="small">
+                Used for secure client-server key establishment.
+            </div>
+
+            <div class="info-list" style="margin-top:15px;">
+
+                <div class="info-row">
+                    <span class="info-key">Algorithm</span>
+                    <span class="info-value">ML-KEM-768</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Purpose</span>
+                    <span class="info-value">Key establishment</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Status</span>
+                    <span class="info-value green">Completed</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                AES-256-GCM
+            </div>
+
+            <h2 class="green">
+                AUTHENTICATED ENCRYPTION
+            </h2>
+
+            <div class="small">
+                Protects federated model updates during transport.
+            </div>
+
+            <div class="info-list" style="margin-top:15px;">
+
+                <div class="info-row">
+                    <span class="info-key">Algorithm</span>
+                    <span class="info-value">AES-256-GCM</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Purpose</span>
+                    <span class="info-value">Confidentiality + Integrity</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-key">Status</span>
+                    <span class="info-value green">Completed</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Secure Federated Update Flow
+        </div>
+
+        <div class="architecture">
+
+            <div class="node">
+                <div class="node-title">Local Model</div>
+                <div class="node-sub">Client update</div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="node">
+                <div class="node-title purple">ML-KEM-768</div>
+                <div class="node-sub">Key establishment</div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="node">
+                <div class="node-title green">AES-256-GCM</div>
+                <div class="node-sub">Encrypted update</div>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="node">
+                <div class="node-title cyan">FedAvg</div>
+                <div class="node-sub">Aggregation</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ATTACKS
+===================================================== -->
+
+<section class="view" id="attacks">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Attack Experiments
+            </div>
+
+            <div class="view-description">
+                Federated model poisoning experiment and performance impact
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            COMPLETED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-3">
+
+        <div class="card attack-card">
+
+            <div class="card-title">
+                ATTACK
+            </div>
+
+            <div class="metric-value red">
+                MODEL POISONING
+            </div>
+
+            <div class="metric-label">
+                Malicious federated update scenario
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                PLAIN FEDAVG
+            </div>
+
+            <div class="metric-value cyan">
+                75.50%
+            </div>
+
+            <div class="metric-label">
+                Accuracy
+            </div>
+
+        </div>
+
+
+        <div class="card attack-card">
+
+            <div class="card-title">
+                POISONED FEDAVG
+            </div>
+
+            <div class="metric-value red">
+                73.46%
+            </div>
+
+            <div class="metric-label">
+                Accuracy after poisoning
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Attack Impact
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Metric</th>
+                        <th>Plain FedAvg</th>
+                        <th>Poisoned FedAvg</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Accuracy</td>
+                        <td>75.50%</td>
+                        <td>73.46%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Precision</td>
+                        <td>95.37%</td>
+                        <td>96.40%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Recall</td>
+                        <td>59.87%</td>
+                        <td>55.44%</td>
+                    </tr>
+
+                    <tr>
+                        <td>F1 Score</td>
+                        <td>73.56%</td>
+                        <td>70.40%</td>
+                    </tr>
+
+                    <tr>
+                        <td>FPR</td>
+                        <td>3.84%</td>
+                        <td>2.74%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ROBUSTNESS
+===================================================== -->
+
+<section class="view" id="robustness">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Robustness
+            </div>
+
+            <div class="view-description">
+                Robust aggregation against malicious federated updates
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            ROBUST AGGREGATION COMPLETE
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-3">
+
+        <div class="card">
+
+            <div class="card-title">
+                PLAIN FEDAVG
+            </div>
+
+            <div class="metric-value cyan">
+                75.50%
+            </div>
+
+            <div class="metric-label">
+                Accuracy
+            </div>
+
+        </div>
+
+
+        <div class="card attack-card">
+
+            <div class="card-title">
+                POISONED FEDAVG
+            </div>
+
+            <div class="metric-value red">
+                73.46%
+            </div>
+
+            <div class="metric-label">
+                Accuracy
+            </div>
+
+        </div>
+
+
+        <div class="card robust-card">
+
+            <div class="card-title">
+                ROBUST MEDIAN
+            </div>
+
+            <div class="metric-value green">
+                76.48%
+            </div>
+
+            <div class="metric-label">
+                Accuracy
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div style="height:17px;"></div>
+
+
+    <div class="card">
+
+        <div class="card-title">
+            Robustness Comparison
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Metric</th>
+                        <th>Plain FedAvg</th>
+                        <th>Poisoned FedAvg</th>
+                        <th>Robust Median</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Accuracy</td>
+                        <td>75.50%</td>
+                        <td>73.46%</td>
+                        <td class="green">76.48%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Precision</td>
+                        <td>95.37%</td>
+                        <td>96.40%</td>
+                        <td class="green">95.48%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Recall</td>
+                        <td>59.87%</td>
+                        <td>55.44%</td>
+                        <td class="green">61.59%</td>
+                    </tr>
+
+                    <tr>
+                        <td>F1 Score</td>
+                        <td>73.56%</td>
+                        <td>70.40%</td>
+                        <td class="green">74.88%</td>
+                    </tr>
+
+                    <tr>
+                        <td>FPR</td>
+                        <td>3.84%</td>
+                        <td>2.74%</td>
+                        <td>3.85%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     BENCHMARK
+===================================================== -->
+
+<section class="view" id="benchmark">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Benchmark
+            </div>
+
+            <div class="view-description">
+                Cryptographic and federated learning performance measurements
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            BENCHMARKED
+        </div>
+
+    </div>
+
+
+    <div class="grid grid-3">
+
+        <div class="card">
+
+            <div class="card-title">
+                ML-KEM + CRYPTO
+            </div>
+
+            <div class="metric-value purple" id="kemTime">
+                --
+            </div>
+
+            <div class="metric-label">
+                Key generation + encapsulation
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                AES ENCRYPTION
+            </div>
+
+            <div class="metric-value green" id="aesEnc">
+                --
+            </div>
+
+            <div class="metric-label">
+                Mean encryption time
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                AES DECRYPTION
+            </div>
+
+            <div class="metric-value cyan" id="aesDec">
+                --
+            </div>
+
+            <div class="metric-label">
+                Mean decryption time
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                TOTAL CRYPTO
+            </div>
+
+            <div class="metric-value" id="cryptoTotal">
+                --
+            </div>
+
+            <div class="metric-label">
+                Combined cryptographic overhead
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                COMMUNICATION
+            </div>
+
+            <div class="metric-value amber" id="commOverhead">
+                --
+            </div>
+
+            <div class="metric-label">
+                Communication overhead
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                SECURE FL RUNTIME
+            </div>
+
+            <div class="metric-value blue" id="secureRuntime">
+                --
+            </div>
+
+            <div class="metric-label">
+                Plain vs secure FL benchmark
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GRAPHS
+===================================================== -->
+
+<section class="view" id="graphs">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Graphs & Evaluation
+            </div>
+
+            <div class="view-description">
+                Experimental performance, security and robustness visualizations
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            EVALUATION COMPLETE
+        </div>
+
+    </div>
+
+
+    <div class="graph-grid">
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Accuracy Comparison
+            </div>
+
+            <img src="/static/graphs/performance/accuracy_comparison.png"
+                 alt="Accuracy Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Precision Comparison
+            </div>
+
+            <img src="/static/graphs/performance/precision_comparison.png"
+                 alt="Precision Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Recall Comparison
+            </div>
+
+            <img src="/static/graphs/performance/recall_comparison.png"
+                 alt="Recall Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                F1 Comparison
+            </div>
+
+            <img src="/static/graphs/performance/f1_comparison.png"
+                 alt="F1 Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                False Positive Rate
+            </div>
+
+            <img src="/static/graphs/performance/fpr_comparison.png"
+                 alt="FPR Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Cryptographic Overhead
+            </div>
+
+            <img src="/static/graphs/security/crypto_overhead.png"
+                 alt="Crypto Overhead">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Plain vs Secure FL Runtime
+            </div>
+
+            <img src="/static/graphs/security/plain_vs_secure_runtime.png"
+                 alt="Runtime Comparison">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Communication Overhead
+            </div>
+
+            <img src="/static/graphs/security/communication_overhead.png"
+                 alt="Communication Overhead">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Accuracy Robustness
+            </div>
+
+            <img src="/static/graphs/poisoning/accuracy_robustness.png"
+                 alt="Accuracy Robustness">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Precision Robustness
+            </div>
+
+            <img src="/static/graphs/poisoning/precision_robustness.png"
+                 alt="Precision Robustness">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Recall Robustness
+            </div>
+
+            <img src="/static/graphs/poisoning/recall_robustness.png"
+                 alt="Recall Robustness">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                F1 Robustness
+            </div>
+
+            <img src="/static/graphs/poisoning/f1_robustness.png"
+                 alt="F1 Robustness">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                FPR Robustness
+            </div>
+
+            <img src="/static/graphs/poisoning/fpr_robustness.png"
+                 alt="FPR Robustness">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Poisoning Impact
+            </div>
+
+            <img src="/static/graphs/poisoning/poisoning_impact.png"
+                 alt="Poisoning Impact">
+
+        </div>
+
+
+        <div class="graph-card">
+
+            <div class="graph-title">
+                Robust Recovery
+            </div>
+
+            <img src="/static/graphs/poisoning/robust_recovery.png"
+                 alt="Robust Recovery">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PIPELINE
+     ONLY 1–18
+===================================================== -->
+
+<section class="view" id="pipeline">
+
+    <div class="view-header">
+
+        <div>
+
+            <div class="view-title">
+                Research Pipeline
+            </div>
+
+            <div class="view-description">
+                Complete experimental implementation pipeline
+            </div>
+
+        </div>
+
+        <div class="header-badge">
+            18 / 18 COMPLETED
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="pipeline">
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">1</div>
+                <div class="pipeline-name">Dataset</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">2</div>
+                <div class="pipeline-name">Inspection</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">3</div>
+                <div class="pipeline-name">Preprocessing</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">4</div>
+                <div class="pipeline-name">IID Client Partitioning</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">5</div>
+                <div class="pipeline-name">Non-IID Client Partitioning</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">6</div>
+                <div class="pipeline-name">Integrity Validation</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">7</div>
+                <div class="pipeline-name">Feature Reduction</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">8</div>
+                <div class="pipeline-name">Classical IDS Baseline</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">9</div>
+                <div class="pipeline-name">QML IDS — QKSVM</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">10</div>
+                <div class="pipeline-name">Federated Learning</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">11</div>
+                <div class="pipeline-name">ML-KEM-768</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">12</div>
+                <div class="pipeline-name">AES-256-GCM</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">13</div>
+                <div class="pipeline-name">Secure Federated Learning</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">14</div>
+                <div class="pipeline-name">Benchmarking</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">15</div>
+                <div class="pipeline-name">Model Poisoning Attack</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">16</div>
+                <div class="pipeline-name">Robust Aggregation</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">17</div>
+                <div class="pipeline-name">Final Experiments</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+            <div class="pipeline-item">
+                <div class="pipeline-number">18</div>
+                <div class="pipeline-name">Graphs / Evaluation</div>
+                <div class="pipeline-state">✓ COMPLETED</div>
+            </div>
+
+
+        </div>
+
+
+        <div class="progress-box">
+
+            <div class="progress-track">
+
+                <div class="progress-fill"></div>
+
+            </div>
+
+        </div>
+
+
+        <div style="
+            margin-top:13px;
+            color:var(--green);
+            font-size:13px;
+            font-weight:bold;
+            text-align:center;
+        ">
+            ✓ ALL 18 RESEARCH PIPELINE STAGES COMPLETED
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="footer">
+
+    Quantum ML-Based Intrusion Detection with PQC-Secured Federated Model Updates
+
+</div>
+
+
+</div>
+</main>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+const navButtons = document.querySelectorAll(".nav-btn");
+const views = document.querySelectorAll(".view");
+
+navButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const target = button.dataset.view;
+
+        navButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        views.forEach(view => {
+            view.classList.remove("active");
+        });
+
+        const selectedView = document.getElementById(target);
+
+        if(selectedView){
+            selectedView.classList.add("active");
+        }
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+    });
+
+});
+
+
+/* =====================================================
+   FORMAT PERCENTAGE
+===================================================== */
+
+function percent(value){
+
+    if(value === null || value === undefined){
+        return "--";
+    }
+
+    return (Number(value) * 100).toFixed(2) + "%";
+}
+
+
+/* =====================================================
+   LOAD RESULTS
+===================================================== */
+
+async function loadResults(){
+
+    try{
+
+        const response = await fetch("/api/results");
+
+        if(!response.ok){
+            throw new Error("Results API unavailable");
+        }
+
+        const data = await response.json();
+
+        const fed = data.federated_learning_artifact || {};
+
+        const metrics =
+            fed.metrics ||
+            fed.global_metrics ||
+            fed.results ||
+            fed;
+
+        const accuracy =
+            metrics.accuracy ??
+            metrics.test_accuracy;
+
+        const precision =
+            metrics.precision ??
+            metrics.test_precision;
+
+        const recall =
+            metrics.recall ??
+            metrics.test_recall;
+
+        const f1 =
+            metrics.f1 ??
+            metrics.f1_score ??
+            metrics.test_f1;
+
+        if(accuracy !== undefined){
+            document.getElementById("mAccuracy").textContent =
+                percent(accuracy);
+        }
+
+        if(precision !== undefined){
+            document.getElementById("mPrecision").textContent =
+                percent(precision);
+        }
+
+        if(recall !== undefined){
+            document.getElementById("mRecall").textContent =
+                percent(recall);
+        }
+
+        if(f1 !== undefined){
+            document.getElementById("mF1").textContent =
+                percent(f1);
+        }
+
+    }
+
+    catch(error){
+
+        console.log("Results API:",error);
+
+        /*
+         * The dashboard remains functional even if
+         * the API is temporarily unavailable.
+         */
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD BENCHMARK
+===================================================== */
+
+async function loadBenchmark(){
+
+    try{
+
+        const response = await fetch("/api/benchmark");
+
+        if(!response.ok){
+            throw new Error("Benchmark API unavailable");
+        }
+
+        const data = await response.json();
+
+        const crypto =
+            data.secure_fl_crypto_overhead || {};
+
+        const runtime =
+            data.plain_vs_secure_fl_runtime || {};
+
+        const communication =
+            data.model_communication_overhead || {};
+
+
+        if(
+            crypto.keygen_encapsulation_mean_ms !== undefined
+        ){
+
+            document.getElementById("kemTime").textContent =
+                Number(
+                    crypto.keygen_encapsulation_mean_ms
+                ).toFixed(4) + " ms";
+
+        }
+
+
+        if(
+            crypto.encryption_mean_ms !== undefined
+        ){
+
+            document.getElementById("aesEnc").textContent =
+                Number(
+                    crypto.encryption_mean_ms
+                ).toFixed(4) + " ms";
+
+        }
+
+
+        if(
+            crypto.decryption_mean_ms !== undefined
+        ){
+
+            document.getElementById("aesDec").textContent =
+                Number(
+                    crypto.decryption_mean_ms
+                ).toFixed(4) + " ms";
+
+        }
+
+
+        if(
+            crypto.total_crypto_mean_ms !== undefined
+        ){
+
+            document.getElementById("cryptoTotal").textContent =
+                Number(
+                    crypto.total_crypto_mean_ms
+                ).toFixed(4) + " ms";
+
+        }
+
+
+        if(
+            communication.communication_overhead_percentage !== undefined
+        ){
+
+            document.getElementById("commOverhead").textContent =
+                Number(
+                    communication.communication_overhead_percentage
+                ).toFixed(2) + "%";
+
+        }
+
+
+        if(
+            runtime.secure_fl_runtime_seconds !== undefined
+        ){
+
+            document.getElementById("secureRuntime").textContent =
+                Number(
+                    runtime.secure_fl_runtime_seconds
+                ).toFixed(2) + " s";
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log("Benchmark API:",error);
+
+    }
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+loadResults();
+loadBenchmark();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+{
+    "project": "Quantum ML-Based Intrusion Detection with PQC-Secured Federated Model Updates",
+    "stage": "Final Experiments",
+    "plain_federated_learning": {
+        "model": "Federated IDS Neural Network",
+        "test_samples": 22544,
+        "features": 8,
+        "accuracy": 0.7550124201561391,
+        "precision": 0.9536991062562066,
+        "recall": 0.5986908750876646,
+        "f1_score": 0.7356024701996265,
+        "false_positive_rate": 0.03841005045824323,
+        "confusion_matrix": [
+            [
+                9338,
+                373
+            ],
+            [
+                5150,
+                7683
+            ]
+        ]
+    },
+    "secure_federated_learning": {
+        "stage": "Secure Federated Learning",
+        "clients_per_round": 5,
+        "rounds": 3,
+        "ml_kem_algorithm": "ML-KEM-768",
+        "ml_kem_ciphertext_size_bytes": 1088,
+        "aes_algorithm": "AES-256-GCM",
+        "aes_key_size_bytes": 32,
+        "aes_nonce_size_bytes": 12,
+        "model_update_size_bytes": 2845,
+        "encrypted_update_size_bytes": 2861,
+        "all_encrypted_updates_verified": true,
+        "global_model_changed": true,
+        "secure_federated_learning_passed": true
+    },
+    "benchmarking": {
+        "benchmark_stage": "Stage 14 - Benchmarking",
+        "secure_fl_crypto_overhead": {
+            "iterations": 20,
+            "successful_runs": 20,
+            "model_update_size_bytes": 2973,
+            "kem_ciphertext_size_bytes": 1088,
+            "aes_nonce_size_bytes": 12,
+            "encrypted_update_size_bytes": 2989,
+            "keygen_encapsulation_mean_ms": 0.21317500213626772,
+            "encryption_mean_ms": 0.06932500109542161,
+            "decryption_mean_ms": 0.005314998998073861,
+            "total_crypto_mean_ms": 0.2878150022297632,
+            "all_integrity_checks_passed": true
+        },
+        "plain_vs_secure_fl_runtime": {
+            "clients_per_round": 5,
+            "rounds": 3,
+            "plain_fl_runtime_seconds": 10.30057079999824,
+            "secure_fl_runtime_seconds": 7.716954600007739,
+            "additional_runtime_seconds": -2.5836161999905016,
+            "runtime_overhead_percentage": -25.082262431427033
+        },
+        "model_communication_overhead": {
+            "model": "FLIDSModel",
+            "plain_model_update_bytes": 2973,
+            "ml_kem_ciphertext_bytes": 1088,
+            "aes_gcm_encrypted_update_bytes": 3016,
+            "secure_communication_payload_bytes": 4104,
+            "additional_communication_bytes": 1131,
+            "communication_overhead_percentage": 38.042381432896065
+        }
+    },
+    "model_poisoning": {
+        "stage": "Model Poisoning Attack",
+        "poisoned_client_id": 1,
+        "poison_factor": -3.0,
+        "rounds": 3,
+        "clients_per_round": 5,
+        "total_samples": 125973,
+        "clean_fl": {
+            "accuracy": 0.7550124201561391,
+            "precision": 0.9536991062562066,
+            "recall": 0.5986908750876646,
+            "f1": 0.7356024701996265,
+            "fpr": 0.03841005045824323,
+            "true_negative": 9338,
+            "false_positive": 373,
+            "false_negative": 5150,
+            "true_positive": 7683
+        },
+        "poisoned_fl": {
+            "accuracy": 0.734564,
+            "precision": 0.963962,
+            "recall": 0.55443,
+            "f1": 0.703968,
+            "fpr": 0.027392,
+            "true_negative": 9445,
+            "false_positive": 266,
+            "false_negative": 5718,
+            "true_positive": 7115
+        },
+        "performance_difference": {
+            "accuracy": -0.020449,
+            "precision": 0.010262,
+            "recall": -0.044261,
+            "f1": -0.031635,
+            "fpr": -0.011018
+        },
+        "attack_validation": {
+            "global_model_changed": true,
+            "nan_validation": true,
+            "poisoned_model_saved": true
+        }
+    },
+    "robust_aggregation": {
+        "stage": "Robust Aggregation",
+        "aggregation_method": "Coordinate-wise Median",
+        "poisoned_client_id": 1,
+        "poison_factor": -3.0,
+        "rounds": 3,
+        "clients_per_round": 5,
+        "clean_fedavg": {
+            "accuracy": 0.7550124201561391,
+            "precision": 0.9536991062562066,
+            "recall": 0.5986908750876646,
+            "f1": 0.7356024701996265,
+            "fpr": 0.03841005045824323
+        },
+        "poisoned_fedavg": {
+            "accuracy": 0.734564,
+            "precision": 0.963962,
+            "recall": 0.55443,
+            "f1": 0.703968,
+            "fpr": 0.027392
+        },
+        "robust_median": {
+            "accuracy": 0.764771,
+            "precision": 0.95482,
+            "recall": 0.615912,
+            "f1": 0.748804,
+            "fpr": 0.038513
+        },
+        "poisoning_impact": {
+            "accuracy": -0.020448420156139124,
+            "precision": 0.010262893743793411,
+            "recall": -0.04426087508766463,
+            "f1": -0.03163447019962651,
+            "fpr": -0.01101805045824323
+        },
+        "robust_vs_poisoned": {
+            "accuracy": 0.030206999999999984,
+            "precision": -0.009141999999999983,
+            "recall": 0.06148200000000004,
+            "f1": 0.04483599999999999,
+            "fpr": 0.011120999999999999
+        },
+        "robust_vs_clean": {
+            "accuracy": 0.00975857984386086,
+            "precision": 0.0011208937437934274,
+            "recall": 0.017221124912335406,
+            "f1": 0.01320152980037348,
+            "fpr": 0.0001029495417567694
+        }
+    }
+}

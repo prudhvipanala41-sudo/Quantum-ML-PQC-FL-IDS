@@ -1,0 +1,68 @@
+{
+    "project": "Quantum ML-Based Intrusion Detection with PQC-Secured Federated Model Updates",
+    "stage": "Final Experiments",
+    "models": {
+        "plain_fedavg": {
+            "accuracy": 0.7550124201561391,
+            "precision": 0.9536991062562066,
+            "recall": 0.5986908750876646,
+            "f1": 0.7356024701996265,
+            "fpr": 0.03841005045824323
+        },
+        "poisoned_fedavg": {
+            "accuracy": 0.734564,
+            "precision": 0.963962,
+            "recall": 0.55443,
+            "f1": 0.703968,
+            "fpr": 0.027392
+        },
+        "robust_median": {
+            "accuracy": 0.764771,
+            "precision": 0.95482,
+            "recall": 0.615912,
+            "f1": 0.748804,
+            "fpr": 0.038513
+        }
+    },
+    "poisoning_effect": {
+        "accuracy": -0.020448420156139124,
+        "precision": 0.010262893743793411,
+        "recall": -0.04426087508766463,
+        "f1": -0.03163447019962651,
+        "fpr": -0.01101805045824323
+    },
+    "robust_vs_poisoned": {
+        "accuracy": 0.030206999999999984,
+        "precision": -0.009141999999999983,
+        "recall": 0.06148200000000004,
+        "f1": 0.04483599999999999,
+        "fpr": 0.011120999999999999
+    },
+    "robust_vs_clean": {
+        "accuracy": 0.00975857984386086,
+        "precision": 0.0011208937437934274,
+        "recall": 0.017221124912335406,
+        "f1": 0.01320152980037348,
+        "fpr": 0.0001029495417567694
+    },
+    "federated_learning_artifact": {
+        "model": "Federated IDS Neural Network",
+        "test_samples": 22544,
+        "features": 8,
+        "accuracy": 0.7550124201561391,
+        "precision": 0.9536991062562066,
+        "recall": 0.5986908750876646,
+        "f1_score": 0.7356024701996265,
+        "false_positive_rate": 0.03841005045824323,
+        "confusion_matrix": [
+            [
+                9338,
+                373
+            ],
+            [
+                5150,
+                7683
+            ]
+        ]
+    }
+}

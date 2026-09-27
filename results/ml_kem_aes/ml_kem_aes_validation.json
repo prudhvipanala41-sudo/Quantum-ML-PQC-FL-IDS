@@ -1,0 +1,15 @@
+{
+    "test_type": "ML-KEM-768 + AES-256-GCM integration",
+    "validation": {
+        "ml_kem_algorithm": "MlKem768",
+        "ml_kem_shared_secret_size_bytes": 32,
+        "ml_kem_shared_secret_match": true,
+        "aes_algorithm": "AES-256-GCM",
+        "aes_key_size_bits": 256,
+        "nonce_size_bytes": 12,
+        "encryption_succeeded": true,
+        "decryption_succeeded": true,
+        "original_model_update_recovered": true
+    },
+    "passed": true
+}

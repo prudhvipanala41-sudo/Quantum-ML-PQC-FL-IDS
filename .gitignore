@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.vscode/
+.env
+*.log
+.pytest_cache/
+
+# Large generated datasets
+data/processed/*.npy
+data/partitions/**/*.npy

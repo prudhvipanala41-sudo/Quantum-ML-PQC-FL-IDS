@@ -1,0 +1,33 @@
+{
+    "benchmark_stage": "Stage 14 - Benchmarking",
+    "secure_fl_crypto_overhead": {
+        "iterations": 20,
+        "successful_runs": 20,
+        "model_update_size_bytes": 2973,
+        "kem_ciphertext_size_bytes": 1088,
+        "aes_nonce_size_bytes": 12,
+        "encrypted_update_size_bytes": 2989,
+        "keygen_encapsulation_mean_ms": 0.21317500213626772,
+        "encryption_mean_ms": 0.06932500109542161,
+        "decryption_mean_ms": 0.005314998998073861,
+        "total_crypto_mean_ms": 0.2878150022297632,
+        "all_integrity_checks_passed": true
+    },
+    "plain_vs_secure_fl_runtime": {
+        "clients_per_round": 5,
+        "rounds": 3,
+        "plain_fl_runtime_seconds": 10.30057079999824,
+        "secure_fl_runtime_seconds": 7.716954600007739,
+        "additional_runtime_seconds": -2.5836161999905016,
+        "runtime_overhead_percentage": -25.082262431427033
+    },
+    "model_communication_overhead": {
+        "model": "FLIDSModel",
+        "plain_model_update_bytes": 2973,
+        "ml_kem_ciphertext_bytes": 1088,
+        "aes_gcm_encrypted_update_bytes": 3016,
+        "secure_communication_payload_bytes": 4104,
+        "additional_communication_bytes": 1131,
+        "communication_overhead_percentage": 38.042381432896065
+    }
+}

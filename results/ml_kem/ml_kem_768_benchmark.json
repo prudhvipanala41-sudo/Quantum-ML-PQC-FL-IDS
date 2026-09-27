@@ -1,0 +1,34 @@
+{
+    "algorithm": "MlKem768",
+    "iterations": 20,
+    "successful_runs": 20,
+    "validation": {
+        "all_shared_secrets_match": true
+    },
+    "sizes_bytes": {
+        "public_key": 1184,
+        "secret_key": 2400,
+        "ciphertext": 1088,
+        "shared_secret": 32
+    },
+    "timing": {
+        "key_generation": {
+            "min_ms": 0.06630000007135095,
+            "max_ms": 0.17329999991488876,
+            "mean_ms": 0.08569000001443783,
+            "median_ms": 0.07469999945897143
+        },
+        "encapsulation": {
+            "min_ms": 0.07239999922603602,
+            "max_ms": 0.15559999974357197,
+            "mean_ms": 0.09731000013744051,
+            "median_ms": 0.09105000026465859
+        },
+        "decapsulation": {
+            "min_ms": 0.10269999984302558,
+            "max_ms": 0.1654999996389961,
+            "mean_ms": 0.12351999998827523,
+            "median_ms": 0.11635000009846408
+        }
+    }
+}

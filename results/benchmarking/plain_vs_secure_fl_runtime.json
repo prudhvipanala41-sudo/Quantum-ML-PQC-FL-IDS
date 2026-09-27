@@ -1,0 +1,9 @@
+{
+    "benchmark": "Plain FL vs Secure FL Runtime",
+    "clients_per_round": 5,
+    "rounds": 3,
+    "plain_fl_runtime_seconds": 10.30057079999824,
+    "secure_fl_runtime_seconds": 7.716954600007739,
+    "additional_runtime_seconds": -2.5836161999905016,
+    "runtime_overhead_percentage": -25.082262431427033
+}

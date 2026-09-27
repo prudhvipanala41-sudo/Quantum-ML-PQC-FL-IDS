@@ -1,0 +1,15 @@
+{
+    "stage": "Benchmarking",
+    "benchmark": "Secure FL Cryptographic Overhead",
+    "iterations": 20,
+    "successful_runs": 20,
+    "model_update_size_bytes": 2973,
+    "kem_ciphertext_size_bytes": 1088,
+    "aes_nonce_size_bytes": 12,
+    "encrypted_update_size_bytes": 2989,
+    "keygen_encapsulation_mean_ms": 0.21317500213626772,
+    "encryption_mean_ms": 0.06932500109542161,
+    "decryption_mean_ms": 0.005314998998073861,
+    "total_crypto_mean_ms": 0.2878150022297632,
+    "all_integrity_checks_passed": true
+}

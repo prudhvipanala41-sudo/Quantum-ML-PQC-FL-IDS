@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quantum ML IDS Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 28px 40px;
+        }
+
+        header h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        main {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .status {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 8px 14px;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .card h3 {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .section h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .models {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .model {
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .model h3 {
+            margin-bottom: 15px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .pipeline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stage {
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: #e0f2fe;
+            color: #075985;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .security-card {
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .security-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .security-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .security-metric strong {
+            color: #111827;
+        }
+
+        @media (max-width: 900px) {
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .models {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 20px;
+            }
+
+            header {
+                padding: 22px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        .graph-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .graph-card {
+            border: 1px solid #e5e7eb;
+            padding: 16px;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .graph-card h3 {
+            margin-bottom: 12px;
+        }
+
+        .graph-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 900px) {
+            .graph-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Quantum ML-Based Intrusion Detection</h1>
+    <p>PQC-Secured Federated Model Updates</p>
+</header>
+
+<main>
+
+    <div class="status">
+        ● Backend Connected
+    </div>
+
+    <section class="cards">
+
+        <div class="card">
+            <h3>Test Samples</h3>
+            <div class="value" id="testSamples">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Features</h3>
+            <div class="value" id="features">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Federated Accuracy</h3>
+            <div class="value" id="accuracy">--</div>
+        </div>
+
+        <div class="card">
+            <h3>Federated F1</h3>
+            <div class="value" id="f1">--</div>
+        </div>
+
+    </section>
+
+
+    <section class="section">
+
+        <h2>Federated IDS Model Comparison</h2>
+
+        <div class="models">
+
+            <div class="model">
+
+                <h3>Plain FedAvg</h3>
+
+                <div class="metric">
+                    <span>Accuracy</span>
+                    <strong id="plainAccuracy">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Precision</span>
+                    <strong id="plainPrecision">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Recall</span>
+                    <strong id="plainRecall">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>F1</span>
+                    <strong id="plainF1">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>FPR</span>
+                    <strong id="plainFpr">--</strong>
+                </div>
+
+            </div>
+
+
+            <div class="model">
+
+                <h3>Poisoned FedAvg</h3>
+
+                <div class="metric">
+                    <span>Accuracy</span>
+                    <strong id="poisonAccuracy">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Precision</span>
+                    <strong id="poisonPrecision">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Recall</span>
+                    <strong id="poisonRecall">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>F1</span>
+                    <strong id="poisonF1">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>FPR</span>
+                    <strong id="poisonFpr">--</strong>
+                </div>
+
+            </div>
+
+
+            <div class="model">
+
+                <h3>Robust Median</h3>
+
+                <div class="metric">
+                    <span>Accuracy</span>
+                    <strong id="robustAccuracy">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Precision</span>
+                    <strong id="robustPrecision">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>Recall</span>
+                    <strong id="robustRecall">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>F1</span>
+                    <strong id="robustF1">--</strong>
+                </div>
+
+                <div class="metric">
+                    <span>FPR</span>
+                    <strong id="robustFpr">--</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="section">
+        <h2>Security & Federated Learning Benchmark</h2>
+        <div class="security-grid">
+            <div class="security-card">
+                <h3>PQC Crypto Overhead</h3>
+                <div class="security-metric"><span>ML-KEM Key Establishment</span><strong id="kemTime">--</strong></div>
+                <div class="security-metric"><span>AES Encryption</span><strong id="aesEncryption">--</strong></div>
+                <div class="security-metric"><span>AES Decryption</span><strong id="aesDecryption">--</strong></div>
+                <div class="security-metric"><span>Total Crypto</span><strong id="totalCrypto">--</strong></div>
+            </div>
+            <div class="security-card">
+                <h3>Secure FL Runtime</h3>
+                <div class="security-metric"><span>Plain FL Runtime</span><strong id="plainRuntime">--</strong></div>
+                <div class="security-metric"><span>Secure FL Runtime</span><strong id="secureRuntime">--</strong></div>
+                <div class="security-metric"><span>Runtime Difference</span><strong id="runtimeDifference">--</strong></div>
+                <div class="security-metric"><span>Clients / Round</span><strong id="clientsPerRound">--</strong></div>
+            </div>
+            <div class="security-card">
+                <h3>Communication Overhead</h3>
+                <div class="security-metric"><span>Plain Update</span><strong id="plainUpdate">--</strong></div>
+                <div class="security-metric"><span>ML-KEM Ciphertext</span><strong id="kemCiphertext">--</strong></div>
+                <div class="security-metric"><span>Secure Payload</span><strong id="securePayload">--</strong></div>
+                <div class="security-metric"><span>Communication Overhead</span><strong id="communicationOverhead">--</strong></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Performance Evaluation Graphs</h2>
+        <div class="graph-grid">
+            <div class="graph-card"><h3>Accuracy Comparison</h3><img src="/static/graphs/performance/accuracy_comparison.png" alt="Accuracy comparison"></div>
+            <div class="graph-card"><h3>Precision Comparison</h3><img src="/static/graphs/performance/precision_comparison.png" alt="Precision comparison"></div>
+            <div class="graph-card"><h3>Recall Comparison</h3><img src="/static/graphs/performance/recall_comparison.png" alt="Recall comparison"></div>
+            <div class="graph-card"><h3>F1 Comparison</h3><img src="/static/graphs/performance/f1_comparison.png" alt="F1 comparison"></div>
+            <div class="graph-card"><h3>FPR Comparison</h3><img src="/static/graphs/performance/fpr_comparison.png" alt="FPR comparison"></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Security Evaluation Graphs</h2>
+        <div class="graph-grid">
+            <div class="graph-card"><h3>Cryptographic Overhead</h3><img src="/static/graphs/security/crypto_overhead.png" alt="Cryptographic overhead"></div>
+            <div class="graph-card"><h3>Plain vs Secure FL Runtime</h3><img src="/static/graphs/security/plain_vs_secure_runtime.png" alt="Plain versus secure FL runtime"></div>
+            <div class="graph-card"><h3>Communication Overhead</h3><img src="/static/graphs/security/communication_overhead.png" alt="Communication overhead"></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Poisoning &amp; Robust Aggregation Graphs</h2>
+        <div class="graph-grid">
+            <div class="graph-card"><h3>Accuracy Robustness</h3><img src="/static/graphs/poisoning/accuracy_robustness.png" alt="Accuracy robustness"></div>
+            <div class="graph-card"><h3>Precision Robustness</h3><img src="/static/graphs/poisoning/precision_robustness.png" alt="Precision robustness"></div>
+            <div class="graph-card"><h3>Recall Robustness</h3><img src="/static/graphs/poisoning/recall_robustness.png" alt="Recall robustness"></div>
+            <div class="graph-card"><h3>F1 Robustness</h3><img src="/static/graphs/poisoning/f1_robustness.png" alt="F1 robustness"></div>
+            <div class="graph-card"><h3>FPR Robustness</h3><img src="/static/graphs/poisoning/fpr_robustness.png" alt="FPR robustness"></div>
+            <div class="graph-card"><h3>Poisoning Impact</h3><img src="/static/graphs/poisoning/poisoning_impact.png" alt="Poisoning impact"></div>
+            <div class="graph-card"><h3>Robust Recovery</h3><img src="/static/graphs/poisoning/robust_recovery.png" alt="Robust recovery"></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Project Pipeline</h2>
+
+        <div class="pipeline">
+
+            <div class="stage">NSL-KDD</div>
+            <div class="stage">Preprocessing</div>
+            <div class="stage">Feature Reduction</div>
+            <div class="stage">QML IDS</div>
+            <div class="stage">Federated Learning</div>
+            <div class="stage">ML-KEM-768</div>
+            <div class="stage">AES-256-GCM</div>
+            <div class="stage">Secure FL</div>
+            <div class="stage">Model Poisoning</div>
+            <div class="stage">Robust Aggregation</div>
+            <div class="stage">Benchmarking</div>
+            <div class="stage">Evaluation</div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+async function loadResults() {
+
+    try {
+
+        const response = await fetch("/api/results");
+
+        if (!response.ok) {
+            throw new Error("Unable to load results");
+        }
+
+        const data = await response.json();
+
+        const federated = data.federated_learning_artifact;
+        const models = data.models;
+
+        document.getElementById("testSamples").textContent =
+            federated.test_samples.toLocaleString();
+
+        document.getElementById("features").textContent =
+            federated.features;
+
+        document.getElementById("accuracy").textContent =
+            (federated.accuracy * 100).toFixed(2) + "%";
+
+        document.getElementById("f1").textContent =
+            (federated.f1_score * 100).toFixed(2) + "%";
+
+
+        document.getElementById("plainAccuracy").textContent =
+            (models.plain_fedavg.accuracy * 100).toFixed(2) + "%";
+
+        document.getElementById("plainPrecision").textContent =
+            (models.plain_fedavg.precision * 100).toFixed(2) + "%";
+
+        document.getElementById("plainRecall").textContent =
+            (models.plain_fedavg.recall * 100).toFixed(2) + "%";
+
+        document.getElementById("plainF1").textContent =
+            (models.plain_fedavg.f1 * 100).toFixed(2) + "%";
+
+        document.getElementById("plainFpr").textContent =
+            (models.plain_fedavg.fpr * 100).toFixed(2) + "%";
+
+
+        document.getElementById("poisonAccuracy").textContent =
+            (models.poisoned_fedavg.accuracy * 100).toFixed(2) + "%";
+
+        document.getElementById("poisonPrecision").textContent =
+            (models.poisoned_fedavg.precision * 100).toFixed(2) + "%";
+
+        document.getElementById("poisonRecall").textContent =
+            (models.poisoned_fedavg.recall * 100).toFixed(2) + "%";
+
+        document.getElementById("poisonF1").textContent =
+            (models.poisoned_fedavg.f1 * 100).toFixed(2) + "%";
+
+        document.getElementById("poisonFpr").textContent =
+            (models.poisoned_fedavg.fpr * 100).toFixed(2) + "%";
+
+
+        document.getElementById("robustAccuracy").textContent =
+            (models.robust_median.accuracy * 100).toFixed(2) + "%";
+
+        document.getElementById("robustPrecision").textContent =
+            (models.robust_median.precision * 100).toFixed(2) + "%";
+
+        document.getElementById("robustRecall").textContent =
+            (models.robust_median.recall * 100).toFixed(2) + "%";
+
+        document.getElementById("robustF1").textContent =
+            (models.robust_median.f1 * 100).toFixed(2) + "%";
+
+        document.getElementById("robustFpr").textContent =
+            (models.robust_median.fpr * 100).toFixed(2) + "%";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+loadResults();
+
+
+    async function loadBenchmark() {
+        try {
+            const response = await fetch("/api/benchmark");
+            if (!response.ok) throw new Error("Unable to load benchmark");
+
+            const data = await response.json();
+            const crypto = data.secure_fl_crypto_overhead;
+            const runtime = data.plain_vs_secure_fl_runtime;
+            const communication = data.model_communication_overhead;
+
+            document.getElementById("kemTime").textContent =
+                crypto.keygen_encapsulation_mean_ms.toFixed(4) + " ms";
+            document.getElementById("aesEncryption").textContent =
+                crypto.encryption_mean_ms.toFixed(4) + " ms";
+            document.getElementById("aesDecryption").textContent =
+                crypto.decryption_mean_ms.toFixed(4) + " ms";
+            document.getElementById("totalCrypto").textContent =
+                crypto.total_crypto_mean_ms.toFixed(4) + " ms";
+
+            document.getElementById("plainRuntime").textContent =
+                runtime.plain_fl_runtime_seconds.toFixed(2) + " s";
+            document.getElementById("secureRuntime").textContent =
+                runtime.secure_fl_runtime_seconds.toFixed(2) + " s";
+            document.getElementById("runtimeDifference").textContent =
+                runtime.runtime_overhead_percentage.toFixed(2) + "%";
+            document.getElementById("clientsPerRound").textContent =
+                runtime.clients_per_round;
+
+            document.getElementById("plainUpdate").textContent =
+                communication.plain_model_update_bytes.toLocaleString() + " bytes";
+            document.getElementById("kemCiphertext").textContent =
+                communication.ml_kem_ciphertext_bytes.toLocaleString() + " bytes";
+            document.getElementById("securePayload").textContent =
+                communication.secure_communication_payload_bytes.toLocaleString() + " bytes";
+            document.getElementById("communicationOverhead").textContent =
+                communication.communication_overhead_percentage.toFixed(2) + "%";
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    loadBenchmark();
+
+</script>
+
+</body>
+</html>
